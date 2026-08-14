@@ -40,6 +40,16 @@ export const Posts = () => {
         getPosts()
     }, [])
 
+    useEffect(() => {
+        const channel = supa.channel("posts").on("postgres_changes", {
+            event: "*", schema: "public", table: "posts"
+        }, getPosts).subscribe()
+
+        return () => {
+            supa.removeChannel(channel)
+        }
+    }, [])
+
     return (
         <div>
             <div className={"mt-4 flex flex-row justify-end mr-8"}>
