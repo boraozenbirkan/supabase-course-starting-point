@@ -11,6 +11,18 @@ export const Posts = () => {
     const [userId, setUserId] = useState(null);
     const [error, setError] = useState(null);
 
+    // Save user ID on local variable
+    useEffect(() => {
+        supa.auth.getUser().then(response => {
+            if (response.error) {
+                setError(response.error.message)
+                return
+            }
+
+            setUserId(response.data.user.id)
+        })
+    }, [])
+
     const logout = async () => {
         const response = await supa.auth.signOut();
         
@@ -40,6 +52,7 @@ export const Posts = () => {
         getPosts()
     }, [])
 
+    // Get new posts and render in real-time
     useEffect(() => {
         const channel = supa.channel("posts").on("postgres_changes", {
             event: "*", schema: "public", table: "posts"
@@ -49,6 +62,16 @@ export const Posts = () => {
             supa.removeChannel(channel)
         }
     }, [])
+
+    const handleDelete = async (post_id) => {
+        console.log("ID:" + post_id)
+        const response = await supa.from("posts").delete().match({id: post_id})
+
+        if (response.error) {
+            setError(response.error.message)
+            return
+        }
+    }
 
     return (
         <div>
@@ -96,7 +119,7 @@ export const Posts = () => {
                                         ) : null}
                                         {userId === post.user_id ? (
                                             <button
-                                                onClick={() => {}}
+                                                onClick={() => handleDelete(post.id)}
                                                 className={"text-red-500"}
                                             >
                                                 Delete
