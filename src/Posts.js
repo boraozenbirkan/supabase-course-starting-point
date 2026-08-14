@@ -63,12 +63,19 @@ export const Posts = () => {
         }
     }, [])
 
-    const handleDelete = async (post_id) => {
-        console.log("ID:" + post_id)
-        const response = await supa.from("posts").delete().match({id: post_id})
+    const handleDelete = async (post) => {
+        const response = await supa.from("posts").delete().match({id: post.id})
 
         if (response.error) {
             setError(response.error.message)
+            return
+        }
+
+        const fileResponse = await supa.storage.from("images")
+            .remove([`${post.user_id}/${post.img_id}`])
+        
+        if (fileResponse.error) {
+            setError(fileResponse.error.message)
             return
         }
     }
@@ -120,7 +127,7 @@ export const Posts = () => {
                                         ) : null}
                                         {userId === post.user_id ? (
                                             <button
-                                                onClick={() => handleDelete(post.id)}
+                                                onClick={() => handleDelete(post)}
                                                 className={"text-red-500"}
                                             >
                                                 Delete
