@@ -2,8 +2,10 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import ErrorMessage from "./ErrorMessage";
 import { supa } from "./supa"
+import { useCheckAuth } from "./useCheckAuth";
 
 export const Posts = () => {
+    useCheckAuth();
     const navigate = useNavigate();
     const [posts, setPosts] = useState([]);
     const [userId, setUserId] = useState(null);
