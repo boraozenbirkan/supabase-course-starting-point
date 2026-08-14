@@ -1,12 +1,24 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import ErrorMessage from "./ErrorMessage";
+import { supa } from "./supa";
 
 export const Signup = () => {
     const navigate = useNavigate();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState(null);
+
+    const signup = async () => {
+        const response = await supa.auth.signUp({email, password})
+        
+        if (response.error){
+            setError(response.error.messsage)
+            return
+        }
+
+        navigate("/posts")
+    }
 
     return (
         <>
@@ -72,7 +84,7 @@ export const Signup = () => {
                             <button
                                 type="button"
                                 className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                                onClick={() => {}}
+                                onClick={signup}
                             >
                                 Sign Up
                             </button>

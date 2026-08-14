@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import ErrorMessage from "./ErrorMessage";
+import { supa } from "./supa"
 
 export const Posts = () => {
     const navigate = useNavigate();
@@ -8,10 +9,21 @@ export const Posts = () => {
     const [userId, setUserId] = useState(null);
     const [error, setError] = useState(null);
 
+    const logout = async () => {
+        const response = await supa.auth.signOut();
+        
+        if (response.error) {
+            setError(response.error.message)
+            return
+        }
+
+        navigate("/login")
+    }
+
     return (
         <div>
             <div className={"mt-4 flex flex-row justify-end mr-8"}>
-                <button onClick={() => {}} className={"text-indigo-600"}>
+                <button onClick={logout} className={"text-indigo-600"}>
                     Logout
                 </button>
             </div>
