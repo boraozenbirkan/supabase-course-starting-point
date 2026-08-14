@@ -103,7 +103,8 @@ export const Posts = () => {
 
                         <ul role="list" className="divide-y divide-gray-200">
                             {posts.map((post) => {
-                                const imageUrl = "";
+                                const imageUrl = supa.storage.from("images")
+                                    .getPublicUrl(`${post.user_id}/${post.img_id}`).data.publicUrl;
                                 return (
                                     <li key={post.id} className="py-4">
                                         <h4 className={"mb-4"}>
@@ -114,7 +115,7 @@ export const Posts = () => {
                                             </span>
                                         </h4>
                                         <p className={"mb-2"}>{post.content}</p>
-                                        {post.image_id ? (
+                                        {post.img_id ? (
                                             <img src={imageUrl} className={"w-full"} />
                                         ) : null}
                                         {userId === post.user_id ? (

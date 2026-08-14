@@ -13,6 +13,8 @@ export function NewPost() {
     const [error, setError] = useState(null);
 
     const addPost = async () => {
+        const imageId = Boolean(file) ? crypto.randomUUID() : null
+
         const user = await supa.auth.getUser()
         if (user.error){
             setError(user.error.message)
@@ -21,12 +23,23 @@ export function NewPost() {
 
         const insertResult = await supa.from("posts").insert({
             content,
-            user_id: user.data.user.id
+            user_id: user.data.user.id,
+            img_id: imageId
         })
 
         if (insertResult.error){
             setError(insertResult.error.message)
             return
+        }
+
+        if (file) {
+            const uploadResult = await supa.storage.from("images").
+                upload(`${user.data.user.id}/${imageId}`, file)
+
+            if (uploadResult.error){
+                setError(uploadResult.error.message)
+                return
+            }
         }
 
         navigate("/posts")
